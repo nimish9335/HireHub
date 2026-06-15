@@ -110,7 +110,54 @@ const login = async(req,res)=>{
     }
 }
 
+const getProfile = async(req,res)=>{
+    try{
+        const userId = req.id;
+        const user = await User.findById(userId);
+
+        if(!user){
+            return res.status(404).json({
+                message:"User not found",
+                success:false
+            });
+        }
+
+        return res.status(200).json({
+            success:true,
+            user
+        });
+    }catch(error){
+        return res.status(500).json({
+            message:"Internal Server Error",
+            success:false
+        });
+    }
+}
+
+const logout = async(req,res)=>{
+    try{
+        return res.cookie(
+            "token",
+            "",
+            {
+                maxAge:0
+            }
+        ).status(200).json({
+            message:"Logged out successfully",
+            success:true
+        });
+
+    }catch(error){
+        return res.status(500).json({
+            message:"Internal Server Error",
+            success:false
+        });
+    }
+}
+
 module.exports = {
     register,
-    login
+    login,
+    getProfile,
+    logout
 };
