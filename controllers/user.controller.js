@@ -13,6 +13,28 @@ const register = async(req,res)=>{
             });
         }
 
+
+        if(!email.includes("@")){
+            return res.status(400).json({
+                message:"Invalid email",
+                success:false
+            });
+        }
+
+        if(password.length < 6){
+            return res.status(400).json({
+                message:"Password must be at least 6 characters",
+                success:false
+            });
+        }
+
+        if(fullname.trim().length < 3){
+            return res.status(400).json({
+                message:"Name must be at least 3 characters",
+                success:false
+            });
+        }
+
         const user = await User.findOne({email});
 
         if(user){
@@ -38,8 +60,9 @@ const register = async(req,res)=>{
         });
     }catch(error){
         console.log(error);
+
         return res.status(500).json({
-            message:"Internal Server Error",
+            message:error.message,
             success:false
         });
     }
@@ -56,7 +79,22 @@ const login = async(req,res)=>{
             });
         }
 
-        const user = await User.findOne({email});
+        if(!email.includes("@")){
+            return res.status(400).json({
+                message:"Invalid email",
+                success:false
+            });
+        }
+
+        if(password.length < 6){
+            return res.status(400).json({
+                message:"Password must be at least 6 characters",
+                success:false
+            });
+        }
+
+        const user = await User.findOne({email})
+        .select("+password");
 
         if(!user){
             return res.status(400).json({
@@ -103,8 +141,9 @@ const login = async(req,res)=>{
         });
     }catch(error){
         console.log(error);
+
         return res.status(500).json({
-            message:"Internal Server Error",
+            message:error.message,
             success:false
         });
     }
@@ -113,7 +152,8 @@ const login = async(req,res)=>{
 const getProfile = async(req,res)=>{
     try{
         const userId = req.id;
-        const user = await User.findById(userId);
+        const user = await User.findById(req.id)
+        .select("-password");
 
         if(!user){
             return res.status(404).json({
@@ -127,8 +167,10 @@ const getProfile = async(req,res)=>{
             user
         });
     }catch(error){
+        console.log(error);
+
         return res.status(500).json({
-            message:"Internal Server Error",
+            message:error.message,
             success:false
         });
     }
@@ -148,8 +190,10 @@ const logout = async(req,res)=>{
         });
 
     }catch(error){
+        console.log(error);
+
         return res.status(500).json({
-            message:"Internal Server Error",
+            message:error.message,
             success:false
         });
     }

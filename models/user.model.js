@@ -20,13 +20,22 @@ const userSchema = new mongoose.Schema(
 
     password:{
         type:String,
-        required:true
+        required:true,
+        select:false
     },
 
     role:{
         type:String,
         enum:["candidate","recruiter","admin"],
         required:true
+    },
+
+    profile:{
+        bio:{type:String},
+        skills:[{type:String}],
+        resume:{type:String},
+        resumeOriginalName:{type:String},
+        profilePhoto:{type:String}
     }
 },
 {

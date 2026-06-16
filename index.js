@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/user.route");
 const companyRoute=require("./routes/company.route");
 const jobRoute = require("./routes/job.route");
+const applicationRoute =require("./routes/application.route");
 dotenv.config();
 
 connectDB();
@@ -30,6 +31,7 @@ app.get('/',(req,res)=>{
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/company",companyRoute);
 app.use("/api/v1/job", jobRoute);
+app.use("/api/v1/application",applicationRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on ${process.env.PORT}`);
