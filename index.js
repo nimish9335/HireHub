@@ -4,6 +4,8 @@ const cors = require("cors");
 const connectDB=require('./config/db');
 const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/user.route");
+const companyRoute=require("./routes/company.route");
+const jobRoute = require("./routes/job.route");
 dotenv.config();
 
 connectDB();
@@ -26,6 +28,8 @@ app.get('/',(req,res)=>{
     res.send("HireHub running")
 });
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/company",companyRoute);
+app.use("/api/v1/job", jobRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on ${process.env.PORT}`);
