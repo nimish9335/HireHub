@@ -1,6 +1,8 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../config/cloudinary");
+const getDataUri = require("../utils/dataUri");
 
 const register = async(req,res)=>{
     try{
@@ -199,9 +201,63 @@ const logout = async(req,res)=>{
     }
 }
 
+const updateProfile = async(req,res)=>{
+    try{
+
+        const {
+            fullname,
+            email,
+            phoneNumber,
+            bio,
+            skills
+        } = req.body;
+
+        const user = await User.findById(req.id);
+
+        if(!user){
+            return res.status(404).json({
+                message:"User not found",
+                success:false
+            });
+        }
+
+        if(fullname) user.fullname = fullname;
+
+        if(email) user.email = email;
+
+        if(phoneNumber) user.phoneNumber = phoneNumber;
+
+        if(bio){
+            user.profile.bio = bio;
+        }
+
+        if(skills){
+            user.profile.skills = skills.split(",");
+        }
+
+        await user.save();
+
+        return res.status(200).json({
+            message:"Profile updated successfully",
+            success:true,
+            user
+        });
+
+    }catch(error){
+
+        console.log(error);
+
+        return res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+
 module.exports = {
     register,
     login,
     getProfile,
-    logout
+    logout,
+    updateProfile,
 };

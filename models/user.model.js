@@ -31,11 +31,29 @@ const userSchema = new mongoose.Schema(
     },
 
     profile:{
-        bio:{type:String},
-        skills:[{type:String}],
-        resume:{type:String},
-        resumeOriginalName:{type:String},
-        profilePhoto:{type:String}
+        bio:{
+            type:String,
+            default:""
+        },
+
+        skills:[{
+            type:String
+        }],
+
+        resume:{
+            type:String,
+            default:""
+        },
+
+        resumeOriginalName:{
+            type:String,
+            default:""
+        },
+
+        profilePhoto:{
+            type:String,
+            default:""
+        }
     }
 },
 {

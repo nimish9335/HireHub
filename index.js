@@ -1,5 +1,6 @@
 const express=require('express');
 const dotenv=require('dotenv');
+dotenv.config();
 const cors = require("cors");
 const connectDB=require('./config/db');
 const cookieParser = require("cookie-parser");
@@ -7,7 +8,6 @@ const userRoute = require("./routes/user.route");
 const companyRoute=require("./routes/company.route");
 const jobRoute = require("./routes/job.route");
 const applicationRoute =require("./routes/application.route");
-dotenv.config();
 
 connectDB();
 
