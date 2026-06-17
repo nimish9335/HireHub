@@ -4,17 +4,20 @@ const userSchema = new mongoose.Schema(
 {
     fullname:{
         type:String,
-        required:true
+        required:true,
+        trim:true
     },
 
     email:{
         type:String,
         required:true,
-        unique:true
+        unique:true,
+        lowercase:true,
+        trim:true
     },
 
     phoneNumber:{
-        type:Number,
+        type:String,
         required:true
     },
 

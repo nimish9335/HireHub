@@ -4,23 +4,31 @@ const companySchema = new mongoose.Schema(
 {
     name:{
         type:String,
-        required:true
+        required:true,
+        trim:true
     },
 
     description:{
-        type:String
+        type:String,
+        default:"",
+        trim:true
     },
 
     website:{
-        type:String
+        type:String,
+        default:"",
+        trim:true
     },
 
     location:{
-        type:String
+        type:String,
+        default:"",
+        trim:true
     },
 
     logo:{
-        type:String
+        type:String,
+        default:""
     },
 
     userId:{

@@ -1,5 +1,6 @@
 const express = require("express");
-const isAuthenticated =require("../middleware/isAuthenticated");
+const isAuthenticated = require("../middleware/isAuthenticated");
+
 const {
     applyJob,
     getAppliedJobs,
@@ -9,12 +10,12 @@ const {
 
 const router = express.Router();
 
-router.post("/apply/:id",isAuthenticated,applyJob);
+router.post("/apply/:id", isAuthenticated, applyJob);
 
-router.get("/get",isAuthenticated,getAppliedJobs);
+router.get("/get", isAuthenticated, getAppliedJobs);
 
-router.get("/applicants/:id",isAuthenticated,getApplicants);
+router.get("/applicants/:id", isAuthenticated, getApplicants);
 
-router.put("/status/:id/update",isAuthenticated,updateStatus);
+router.put("/status/:id/update", isAuthenticated, updateStatus);
 
 module.exports = router;

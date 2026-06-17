@@ -1,8 +1,6 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const cloudinary = require("../config/cloudinary");
-const getDataUri = require("../utils/dataUri");
 
 const register = async(req,res)=>{
     try{
@@ -115,7 +113,10 @@ const login = async(req,res)=>{
         }
 
         const token = jwt.sign(
-            {userId:user._id},
+            {
+                userId:user._id,
+                role:user.role
+            },
             process.env.JWT_SECRET,
             {
                 expiresIn:process.env.JWT_EXPIRE
@@ -153,7 +154,6 @@ const login = async(req,res)=>{
 
 const getProfile = async(req,res)=>{
     try{
-        const userId = req.id;
         const user = await User.findById(req.id)
         .select("-password");
 
@@ -178,31 +178,34 @@ const getProfile = async(req,res)=>{
     }
 }
 
-const logout = async(req,res)=>{
-    try{
-        return res.cookie(
-            "token",
-            "",
-            {
-                maxAge:0
-            }
-        ).status(200).json({
-            message:"Logged out successfully",
-            success:true
-        });
+const logout = async (req, res) => {
+    try {
 
-    }catch(error){
+        return res
+            .cookie("token", "", {
+                maxAge: 0,
+                httpOnly: true,
+                sameSite: "strict"
+            })
+            .status(200)
+            .json({
+                message: "Logged out successfully",
+                success: true
+            });
+
+    } catch (error) {
+
         console.log(error);
 
         return res.status(500).json({
-            message:error.message,
-            success:false
+            message: error.message,
+            success: false
         });
     }
-}
+};
 
-const updateProfile = async(req,res)=>{
-    try{
+const updateProfile = async (req, res) => {
+    try {
 
         const {
             fullname,
@@ -214,45 +217,62 @@ const updateProfile = async(req,res)=>{
 
         const user = await User.findById(req.id);
 
-        if(!user){
+        if (!user) {
             return res.status(404).json({
-                message:"User not found",
-                success:false
+                message: "User not found",
+                success: false
             });
         }
 
-        if(fullname) user.fullname = fullname;
+        if (fullname) {
+            user.fullname = fullname;
+        }
 
-        if(email) user.email = email;
+        if (email) {
+            user.email = email;
+        }
 
-        if(phoneNumber) user.phoneNumber = phoneNumber;
+        if (phoneNumber) {
+            user.phoneNumber = phoneNumber;
+        }
 
-        if(bio){
+        if (bio) {
             user.profile.bio = bio;
         }
 
-        if(skills){
-            user.profile.skills = skills.split(",");
+        if (skills) {
+            user.profile.skills = skills
+                .split(",")
+                .map(skill => skill.trim());
         }
 
         await user.save();
 
+        const safeUser = {
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        };
+
         return res.status(200).json({
-            message:"Profile updated successfully",
-            success:true,
-            user
+            message: "Profile updated successfully",
+            success: true,
+            user: safeUser
         });
 
-    }catch(error){
+    } catch (error) {
 
         console.log(error);
 
         return res.status(500).json({
-            success:false,
-            message:error.message
+            message: error.message,
+            success: false
         });
     }
-}
+};
 
 module.exports = {
     register,

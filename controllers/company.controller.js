@@ -94,10 +94,25 @@ const updateCompany = async(req,res)=>{
     try{
 
         const companyId = req.params.id;
-
         const updatedData = req.body;
 
-        const company = await Company.findByIdAndUpdate(
+        const company = await Company.findById(companyId);
+
+        if(!company){
+            return res.status(404).json({
+                message:"Company not found",
+                success:false
+            });
+        }
+
+        if(company.userId.toString() !== req.id){
+            return res.status(403).json({
+                message:"Unauthorized",
+                success:false
+            });
+        }
+
+        const updatedCompany = await Company.findByIdAndUpdate(
             companyId,
             updatedData,
             {
@@ -106,7 +121,43 @@ const updateCompany = async(req,res)=>{
         );
 
         return res.status(200).json({
-            company,
+            updatedCompany,
+            success:true
+        });
+
+    }catch(error){
+        console.log(error);
+
+        return res.status(500).json({
+            message:error.message,
+            success:false
+        });
+    }
+}
+
+const deleteCompany = async(req,res)=>{
+    try{
+        const companyId = req.params.id;
+        const company = await Company.findById(companyId);
+
+        if(!company){
+            return res.status(404).json({
+                message:"Company not found",
+                success:false
+            });
+        }
+
+        if(company.userId.toString() !== req.id){
+            return res.status(403).json({
+                message:"Unauthorized",
+                success:false
+            });
+        }
+
+        await Company.findByIdAndDelete(companyId);
+
+        return res.status(200).json({
+            message:"Company deleted successfully",
             success:true
         });
 
@@ -123,5 +174,6 @@ const updateCompany = async(req,res)=>{
 module.exports = {
     registerCompany,
     getCompany,
-    updateCompany
+    updateCompany,
+    deleteCompany
 };

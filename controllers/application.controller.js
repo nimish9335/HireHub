@@ -89,6 +89,22 @@ const getApplicants = async(req,res)=>{
 
         const jobId = req.params.id;
 
+        const job = await Job.findById(jobId);
+
+        if(!job){
+            return res.status(404).json({
+                message:"Job not found",
+                success:false
+            });
+        }
+
+        if(job.createdBy.toString() !== req.id){
+            return res.status(403).json({
+                message:"Unauthorized",
+                success:false
+            });
+        }
+
         const applicants =
         await Application.find({
             job:jobId
@@ -126,11 +142,19 @@ const updateStatus = async(req,res)=>{
         }
 
         const application =
-        await Application.findById(req.params.id);
+        await Application.findById(req.params.id)
+        .populate("job");
 
         if(!application){
             return res.status(404).json({
                 message:"Application not found",
+                success:false
+            });
+        }
+
+        if(application.job.createdBy.toString() !== req.id){
+            return res.status(403).json({
+                message:"Unauthorized",
                 success:false
             });
         }

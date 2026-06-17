@@ -16,6 +16,7 @@ const isAuthenticated = async(req,res,next)=>{
             process.env.JWT_SECRET
         );
 
+        req.user = decoded;
         req.id = decoded.userId;
         next();
 
