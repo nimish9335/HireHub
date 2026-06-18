@@ -12,6 +12,7 @@ const applicationRoute =require("./routes/application.route");
 connectDB();
 
 const app=express();
+const PORT = process.env.PORT || 8000;
 
 app.use(
     cors({
@@ -33,6 +34,6 @@ app.use("/api/v1/company",companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application",applicationRoute);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on ${process.env.PORT}`);
+app.listen(PORT, () => {
+    console.log(`Server running on ${PORT}`);
 });
